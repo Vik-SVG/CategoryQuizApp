@@ -1,5 +1,6 @@
 package com.victor_priesniakov.categoryquizapp
 
+import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.Menu
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog
 import com.victor_priesniakov.categoryquizapp.Common.Common
+import com.victor_priesniakov.categoryquizapp.SQLhelper.DBHelper
 import com.victor_priesniakov.categoryquizapp.SQLhelper.QuestionsDao
 import com.victor_priesniakov.categoryquizapp.SQLhelper.RoomDBHelper
 import com.victor_priesniakov.categoryquizapp.adapter.GridAnswerAdapter
@@ -87,11 +89,15 @@ class QuestionActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
             val fragmentAdapter = MyFragmentAdapter(supportFragmentManager, this, Common.fragmentList)
 
-            myViewPager = findViewById(R.id.view_pager)
+            view_pager.offscreenPageLimit = Common.questionList.size
+            view_pager.adapter = fragmentAdapter
+
+           /* myViewPager = findViewById(R.id.view_pager)
             myViewPager.offscreenPageLimit = Common.questionList.size
             myViewPager.adapter = fragmentAdapter
+             sliding_tabs.setupWithViewPager(myViewPager)*/
 
-            sliding_tabs.setupWithViewPager(myViewPager)
+            sliding_tabs.setupWithViewPager(view_pager)
 
         }
     }
@@ -132,10 +138,12 @@ class QuestionActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     private fun genQuestion() {
 
-         mQuestionsDB = RoomDBHelper.getAppDataBase(this)
+        /* mQuestionsDB = RoomDBHelper.getAppDataBase(this)
         mQuestions = mQuestionsDB?.questionsDao()
 
-        Common.questionList = mQuestions?.getAllQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Questions>
+        Common.questionList = mQuestions?.getAllQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Questions> room implement*/
+
+        Common.questionList = DBHelper.getInstance(this).getQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Questions>
 
         if (Common.questionList.size==0){
 

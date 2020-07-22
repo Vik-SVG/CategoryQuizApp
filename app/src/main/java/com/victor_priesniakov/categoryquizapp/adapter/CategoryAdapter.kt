@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.victor_priesniakov.categoryquizapp.Common.Common
+import com.victor_priesniakov.categoryquizapp.QuestionActivity
 import com.victor_priesniakov.categoryquizapp.R
 import com.victor_priesniakov.categoryquizapp.`interface`.IonRecyclerViewItemClickListener
 import com.victor_priesniakov.categoryquizapp.model.Category
@@ -60,7 +61,7 @@ class CategoryAdapter (internal var context: Context,
         holder.setiOnRecyclerViewItemClickListener(object : IonRecyclerViewItemClickListener {
             override fun onClick(view: View, position: Int) {
                 Common.selectedCategory = categoryList[position]
-                val intent = Intent(context, Questions::class.java)
+                val intent = Intent(context, QuestionActivity::class.java)
                 context.startActivity(intent)
             } })
     }

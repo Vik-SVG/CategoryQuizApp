@@ -44,7 +44,7 @@ class DBHelper (context: Context):SQLiteAssetHelper(context, DB_NAME, null, DB_V
 
     fun getQuestionsByCategory(categoryId:Int):MutableList<Questions>{
         val db = instance!!.writableDatabase
-        val cursor = db.rawQuery("SELECT * FROM Questions WHERE CategoryId=$categoryId ORDER BY RANDOM() LIMIT 30", null)
+        val cursor = db.rawQuery("SELECT * FROM Question WHERE CategoryId=$categoryId ORDER BY RANDOM() LIMIT 30", null)
         val questionList = ArrayList<Questions>()
         if(cursor.moveToFirst()){
             while (!cursor.isAfterLast){

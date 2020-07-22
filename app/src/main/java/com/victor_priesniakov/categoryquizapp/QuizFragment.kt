@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.victor_priesniakov.categoryquizapp.Common.SpacesItemDescription
 import com.victor_priesniakov.categoryquizapp.SQLhelper.CategoryDao
+import com.victor_priesniakov.categoryquizapp.SQLhelper.DBHelper
 import com.victor_priesniakov.categoryquizapp.SQLhelper.RoomDBHelper
 import com.victor_priesniakov.categoryquizapp.adapter.CategoryAdapter
 import com.victor_priesniakov.categoryquizapp.model.Category
@@ -37,7 +38,7 @@ class QuizFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_quiz, container, false)
         v.toolbar1.title = toolbarTitle
 
-        mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
+        /*mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
         mRecycleView.setHasFixedSize(true)
 
         mRecycleView.layoutManager = GridLayoutManager(context, 2)
@@ -51,6 +52,21 @@ class QuizFragment : Fragment() {
 
         val myAdapter = CategoryAdapter(context as Context, mCategoryList as List<Category>)
         mRecycleView.adapter = myAdapter
+
+        return v*/
+
+
+        mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
+        mRecycleView.setHasFixedSize(true)
+
+        mRecycleView.layoutManager = GridLayoutManager(context, 2)
+
+        val adapter = CategoryAdapter(context as Context, DBHelper.getInstance(context as Context).allCategory)
+
+        val mItemDecoration = SpacesItemDescription(10)
+        mRecycleView.addItemDecoration(mItemDecoration)
+
+        mRecycleView.adapter = adapter
 
         return v
     }
