@@ -1,6 +1,7 @@
 package com.victor_priesniakov.categoryquizapp.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.victor_priesniakov.categoryquizapp.Common.Common
 import com.victor_priesniakov.categoryquizapp.R
 import com.victor_priesniakov.categoryquizapp.`interface`.IonRecyclerViewItemClickListener
 import com.victor_priesniakov.categoryquizapp.model.Category
+import com.victor_priesniakov.categoryquizapp.model.Questions
 
 class CategoryAdapter (internal var context: Context,
 
@@ -56,7 +59,9 @@ class CategoryAdapter (internal var context: Context,
 
         holder.setiOnRecyclerViewItemClickListener(object : IonRecyclerViewItemClickListener {
             override fun onClick(view: View, position: Int) {
-            Toast.makeText(context, "Click on "+ categoryList[position].name, Toast.LENGTH_SHORT).show()
+                Common.selectedCategory = categoryList[position]
+                val intent = Intent(context, Questions::class.java)
+                context.startActivity(intent)
             } })
     }
 

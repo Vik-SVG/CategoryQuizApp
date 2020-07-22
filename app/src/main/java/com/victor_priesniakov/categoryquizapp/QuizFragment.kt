@@ -13,9 +13,6 @@ import com.victor_priesniakov.categoryquizapp.SQLhelper.CategoryDao
 import com.victor_priesniakov.categoryquizapp.SQLhelper.RoomDBHelper
 import com.victor_priesniakov.categoryquizapp.adapter.CategoryAdapter
 import com.victor_priesniakov.categoryquizapp.model.Category
-import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_quiz.view.*
 
 
@@ -38,7 +35,7 @@ class QuizFragment : Fragment() {
     ): View? {
 
         val v = inflater.inflate(R.layout.fragment_quiz, container, false)
-        v.toolbar.title = toolbarTitle
+        v.toolbar1.title = toolbarTitle
 
         mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
         mRecycleView.setHasFixedSize(true)
