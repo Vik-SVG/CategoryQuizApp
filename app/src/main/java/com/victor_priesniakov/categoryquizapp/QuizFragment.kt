@@ -5,22 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.victor_priesniakov.categoryquizapp.Common.SpacesItemDescription
-import com.victor_priesniakov.categoryquizapp.SQLhelper.DBHelper
+import com.victor_priesniakov.categoryquizapp.SQLhelper.CategoryDao
+import com.victor_priesniakov.categoryquizapp.SQLhelper.RoomDBHelper
 import com.victor_priesniakov.categoryquizapp.adapter.CategoryAdapter
-import kotlinx.android.synthetic.main.fragment_quiz.*
+import com.victor_priesniakov.categoryquizapp.model.Category
+import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_quiz.view.*
 
 
-
-
 class QuizFragment : Fragment() {
+
+    private var mDataBase:RoomDBHelper?=null
+    private var mCategories:CategoryDao?=null
 
     val toolbarTitle = "QUIZ APP 2020"
     lateinit var mRecycleView: RecyclerView
@@ -35,8 +37,6 @@ class QuizFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
-
         val v = inflater.inflate(R.layout.fragment_quiz, container, false)
         v.toolbar.title = toolbarTitle
 
@@ -44,13 +44,16 @@ class QuizFragment : Fragment() {
         mRecycleView.setHasFixedSize(true)
 
         mRecycleView.layoutManager = GridLayoutManager(context, 2)
-
-        val adapter = CategoryAdapter(context as Context, DBHelper.getInstance(context as Context).allCategory)
-
         val mItemDecoration = SpacesItemDescription(10)
         mRecycleView.addItemDecoration(mItemDecoration)
 
-        mRecycleView.adapter = adapter
+
+            mDataBase = RoomDBHelper.getAppDataBase(context as Context)
+            mCategories = mDataBase?.categoryDao()
+        val mCategoryList:List<Category>? = mCategories?.getAllCategory()
+
+        val myAdapter = CategoryAdapter(context as Context, mCategoryList as List<Category>)
+        mRecycleView.adapter = myAdapter
 
         return v
     }
