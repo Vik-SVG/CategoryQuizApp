@@ -38,7 +38,11 @@ class QuizFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_quiz, container, false)
         v.toolbar1.title = toolbarTitle
 
-        /*mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
+
+
+
+       /* //Room implem
+        mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
         mRecycleView.setHasFixedSize(true)
 
         mRecycleView.layoutManager = GridLayoutManager(context, 2)
@@ -56,7 +60,11 @@ class QuizFragment : Fragment() {
         return v*/
 
 
-        mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
+
+
+
+       //sqlite impl
+       mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
         mRecycleView.setHasFixedSize(true)
 
         mRecycleView.layoutManager = GridLayoutManager(context, 2)
@@ -69,6 +77,10 @@ class QuizFragment : Fragment() {
         mRecycleView.adapter = adapter
 
         return v
+
+
+
+
     }
 
     companion object {

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.victor_priesniakov.categoryquizapp.Common.Common
@@ -14,7 +13,6 @@ import com.victor_priesniakov.categoryquizapp.QuestionActivity
 import com.victor_priesniakov.categoryquizapp.R
 import com.victor_priesniakov.categoryquizapp.`interface`.IonRecyclerViewItemClickListener
 import com.victor_priesniakov.categoryquizapp.model.Category
-import com.victor_priesniakov.categoryquizapp.model.Questions
 
 class CategoryAdapter (internal var context: Context,
 

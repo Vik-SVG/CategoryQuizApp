@@ -3,7 +3,7 @@ package com.victor_priesniakov.categoryquizapp.SQLhelper
 import android.content.Context
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper
 import com.victor_priesniakov.categoryquizapp.model.Category
-import com.victor_priesniakov.categoryquizapp.model.Questions
+import com.victor_priesniakov.categoryquizapp.model.Question
 
 class DBHelper (context: Context):SQLiteAssetHelper(context, DB_NAME, null, DB_VER){
 
@@ -42,13 +42,13 @@ class DBHelper (context: Context):SQLiteAssetHelper(context, DB_NAME, null, DB_V
 
     //get all questions by category
 
-    fun getQuestionsByCategory(categoryId:Int):MutableList<Questions>{
+    fun getQuestionsByCategory(categoryId:Int):MutableList<Question>{
         val db = instance!!.writableDatabase
         val cursor = db.rawQuery("SELECT * FROM Question WHERE CategoryId=$categoryId ORDER BY RANDOM() LIMIT 30", null)
-        val questionList = ArrayList<Questions>()
+        val questionList = ArrayList<Question>()
         if(cursor.moveToFirst()){
             while (!cursor.isAfterLast){
-                val question = Questions(cursor.getInt(cursor.getColumnIndex("ID")),
+                val question = Question(cursor.getInt(cursor.getColumnIndex("ID")),
                     cursor.getString(cursor.getColumnIndex("QuestionText")),
                     cursor.getString(cursor.getColumnIndex("QuestionImage")),
                     cursor.getString(cursor.getColumnIndex("AnswerA")),

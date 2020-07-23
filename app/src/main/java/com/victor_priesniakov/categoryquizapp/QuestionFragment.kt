@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso
 import com.victor_priesniakov.categoryquizapp.Common.Common
 import com.victor_priesniakov.categoryquizapp.`interface`.IAnswerSelect
 import com.victor_priesniakov.categoryquizapp.model.CurrentQuestion
-import com.victor_priesniakov.categoryquizapp.model.Questions
+import com.victor_priesniakov.categoryquizapp.model.Question
 import kotlinx.android.synthetic.main.fragment_question.*
 import java.lang.Exception
 import java.lang.StringBuilder
@@ -30,7 +30,7 @@ class QuestionFragment : Fragment(), IAnswerSelect {
 
     lateinit var mLayoutImage:FrameLayout
     lateinit var mProgresBar:ProgressBar
-    var mQuestion: Questions?=null
+    var mQuestion: Question?=null
     var mQuestionIndex = -1
 
 

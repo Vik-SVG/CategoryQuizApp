@@ -1,6 +1,5 @@
 package com.victor_priesniakov.categoryquizapp
 
-import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.Menu
@@ -8,12 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import com.google.android.material.navigation.NavigationView
-import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -27,7 +21,7 @@ import com.victor_priesniakov.categoryquizapp.SQLhelper.RoomDBHelper
 import com.victor_priesniakov.categoryquizapp.adapter.GridAnswerAdapter
 import com.victor_priesniakov.categoryquizapp.adapter.MyFragmentAdapter
 import com.victor_priesniakov.categoryquizapp.model.CurrentQuestion
-import com.victor_priesniakov.categoryquizapp.model.Questions
+import com.victor_priesniakov.categoryquizapp.model.Question
 import kotlinx.android.synthetic.main.activity_question.*
 import kotlinx.android.synthetic.main.content_main.*
 import java.util.concurrent.TimeUnit
@@ -141,9 +135,9 @@ class QuestionActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         /* mQuestionsDB = RoomDBHelper.getAppDataBase(this)
         mQuestions = mQuestionsDB?.questionsDao()
 
-        Common.questionList = mQuestions?.getAllQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Questions> room implement*/
+        Common.questionList = mQuestions?.getAllQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Question> //room implement*/
 
-        Common.questionList = DBHelper.getInstance(this).getQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Questions>
+        Common.questionList = DBHelper.getInstance(this).getQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Question>
 
         if (Common.questionList.size==0){
 
