@@ -1,4 +1,4 @@
-package com.victor_priesniakov.categoryquizapp.`interface`
+package com.victor_priesniakov.categoryquizapp.interface1
 
 import android.view.View
 

@@ -8,7 +8,7 @@ import com.victor_priesniakov.categoryquizapp.QuestionFragment
 import java.lang.StringBuilder
 
 class MyFragmentAdapter (fm:FragmentManager, var context: Context,
-                         var fragmentList:List<QuestionFragment>):FragmentPagerAdapter(fm) {
+                         var fragmentList:List<QuestionFragment>):FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getItem(position: Int): Fragment {
         return  fragmentList[position]  }
 

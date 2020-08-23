@@ -1,8 +1,8 @@
-package com.victor_priesniakov.categoryquizapp.`interface`
+package com.victor_priesniakov.categoryquizapp.interface1
 
 import com.victor_priesniakov.categoryquizapp.model.CurrentQuestion
 
-interface IAnswerSelect {
+public interface IAnswerSelect {
     fun selectedAnswer():CurrentQuestion
     fun showCorrectAnswer()
     fun disableAnswer()

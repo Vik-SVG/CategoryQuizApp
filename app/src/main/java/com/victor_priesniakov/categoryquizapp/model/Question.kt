@@ -1,5 +1,7 @@
 package com.victor_priesniakov.categoryquizapp.model
 
+import androidx.room.ColumnInfo
+import androidx.room.ColumnInfo.INTEGER
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -13,8 +15,9 @@ data class Question(@PrimaryKey
                     public   var AnswerC:String?,
                     public   var AnswerD:String?,
                     public  var CorrectAnswer:String?,
-                    public   var IsImageQuestion:Boolean,
-                    public  var CategoryId:Int
+                 //   @ColumnInfo(typeAffinity = INTEGER)
+                    public   var IsImageQuestion:Int?,
+                    public  var CategoryID:Int?
 
 ) {
 }

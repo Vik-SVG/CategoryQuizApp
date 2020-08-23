@@ -6,6 +6,6 @@ class QuizActivity : SingleFragmentActivity() {
 
     override fun createFragment(): Fragment? {
 
-        return QuizFragment.newInstance()
+        return QuizFragment.newInstance1()
     }
 }

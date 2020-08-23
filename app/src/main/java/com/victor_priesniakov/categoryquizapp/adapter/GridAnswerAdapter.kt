@@ -8,13 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.victor_priesniakov.categoryquizapp.Common.Common
 import com.victor_priesniakov.categoryquizapp.R
 import com.victor_priesniakov.categoryquizapp.model.CurrentQuestion
-import kotlinx.android.synthetic.main.layout_grid_answer.view.*
 
 class GridAnswerAdapter(internal var context:Context, internal var answerSheetList:List<CurrentQuestion>) :
     RecyclerView.Adapter<GridAnswerAdapter.MyViewHolder>() {
-
-
-
 
     inner class MyViewHolder(itemViev: View): RecyclerView.ViewHolder(itemViev){
         internal var question_item:View

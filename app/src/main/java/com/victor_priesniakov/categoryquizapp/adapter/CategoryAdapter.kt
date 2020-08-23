@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.victor_priesniakov.categoryquizapp.Common.Common
 import com.victor_priesniakov.categoryquizapp.QuestionActivity
 import com.victor_priesniakov.categoryquizapp.R
-import com.victor_priesniakov.categoryquizapp.`interface`.IonRecyclerViewItemClickListener
+import com.victor_priesniakov.categoryquizapp.interface1.IonRecyclerViewItemClickListener
 import com.victor_priesniakov.categoryquizapp.model.Category
 
 class CategoryAdapter (internal var context: Context,

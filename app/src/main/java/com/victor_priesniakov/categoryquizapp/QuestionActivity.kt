@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog
 import com.victor_priesniakov.categoryquizapp.Common.Common
@@ -23,33 +24,44 @@ import com.victor_priesniakov.categoryquizapp.adapter.MyFragmentAdapter
 import com.victor_priesniakov.categoryquizapp.model.CurrentQuestion
 import com.victor_priesniakov.categoryquizapp.model.Question
 import kotlinx.android.synthetic.main.activity_question.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import java.util.concurrent.TimeUnit
 
-class QuestionActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class QuestionActivity : AppCompatActivity(){
 
-   private var mQuestionsDB:RoomDBHelper? = null
-    private var mQuestions: QuestionsDao? =null
-    lateinit var countDownTimer:CountDownTimer
+    private var mQuestionsDB: RoomDBHelper? = null
+    private var mQuestions: QuestionsDao? = null
+    lateinit var countDownTimer: CountDownTimer
     var time_play = Common.TOTAL_TIME
     lateinit var adapter: GridAnswerAdapter
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var myViewPager:ViewPager
+    private lateinit var myViewPager: ViewPager
+    private lateinit var mGridAnswer: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
-        val toolbar: Toolbar = findViewById(R.id.toolbar2)
-        setSupportActionBar(toolbar)
+
+
+
+
+       // val toolbar: Toolbar = findViewById(R.id.toolbar2)
+        toolbar2.title = "Now Quiz!"
+        setSupportActionBar(toolbar2)
 
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this,
+            drawer_layout,
+            toolbar2, // toolbar
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        nav_view.setNavigationItemSelectedListener(this)
 
 
+       // nav_view.setNavigationItemSelectedListener(this) // if extending ,NavigationView.OnNavigationItemSelectedListener
 
         /*val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -61,45 +73,54 @@ class QuestionActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         navView.setupWithNavController(navController)*/
 
 
-
-
-
         genQuestion()
 
-        if (Common.questionList.size>0){
+        if (Common.questionList.size > 0) {
             txt_timer.visibility = View.VISIBLE
             txt_right_answer.visibility = View.VISIBLE
+
             countTimer()
+
             genItems()
-            grid_answer.setHasFixedSize(true)
-            if (Common.questionList.size>0)
-                grid_answer.layoutManager = GridLayoutManager(this,
-                    if (Common.questionList.size>10)
-                        Common.questionList.size/2
-                    else Common.questionList.size)
+
+            mGridAnswer = findViewById(R.id.grid_answer)
+            mGridAnswer.setHasFixedSize(true)
+            //grid_answer.setHasFixedSize(true)
+
+            if (Common.questionList.size > 0)
+               // grid_answer.layoutManager = GridLayoutManager(
+                mGridAnswer.layoutManager = GridLayoutManager(
+                    this,
+                    if (Common.questionList.size > 10)
+                        Common.questionList.size / 2
+                    else Common.questionList.size
+                )
+
             adapter = GridAnswerAdapter(this, Common.myAnswerSheetList)
-            grid_answer.adapter = adapter
+            //grid_answer.adapter = adapter
+            mGridAnswer.adapter = adapter
+
             genFragmentList()
 
-            val fragmentAdapter = MyFragmentAdapter(supportFragmentManager, this, Common.fragmentList)
+            val fragmentAdapter =
+                MyFragmentAdapter(supportFragmentManager, this, Common.fragmentList)
 
-            view_pager.offscreenPageLimit = Common.questionList.size
+          //  view_pager.offscreenPageLimit = Common.questionList.size
             view_pager.adapter = fragmentAdapter
-
-           /* myViewPager = findViewById(R.id.view_pager)
-            myViewPager.offscreenPageLimit = Common.questionList.size
-            myViewPager.adapter = fragmentAdapter
-             sliding_tabs.setupWithViewPager(myViewPager)*/
-
             sliding_tabs.setupWithViewPager(view_pager)
+
+            /* myViewPager = findViewById(R.id.view_pager)
+             myViewPager.offscreenPageLimit = Common.questionList.size
+             myViewPager.adapter = fragmentAdapter
+              sliding_tabs.setupWithViewPager(myViewPager)*/
 
         }
     }
 
     private fun genFragmentList() {
-        for (i in Common.questionList.indices){
+        for (i in Common.questionList.indices) {
             val bundle = Bundle()
-            bundle.putInt("index",i)
+            bundle.putInt("index", i)
             val fragment = QuestionFragment()
             fragment.arguments = bundle
             Common.fragmentList.add(fragment)
@@ -107,21 +128,33 @@ class QuestionActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     private fun genItems() {
-        for(i in Common.questionList.indices)
+        if (!Common.myAnswerSheetList.equals(null))
+            Common.myAnswerSheetList.clear()
+
+
+        for (i in Common.questionList.indices)
             Common.myAnswerSheetList.add(CurrentQuestion(i, Common.ANSWER_TYPE.NO_ANSWER))
     }
 
+
     private fun countTimer() {
-        countDownTimer = object:CountDownTimer(Common.TOTAL_TIME.toLong(), 1000){
+        countDownTimer = object : CountDownTimer(Common.TOTAL_TIME.toLong(), 1000) {
             override fun onFinish() {
                 finishGame()
             }
 
             override fun onTick(interval: Long) {
-                txt_timer.text = (java.lang.String.format("%02d:%02d",
-                TimeUnit.MILLISECONDS.toMinutes(interval),
-                    TimeUnit.MILLISECONDS.toSeconds(interval) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(interval))))
-           time_play-=1000 }
+                txt_timer.text = (java.lang.String.format(
+                    "%02d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(interval),
+                    TimeUnit.MILLISECONDS.toSeconds(interval) - TimeUnit.MINUTES.toSeconds(
+                        TimeUnit.MILLISECONDS.toMinutes(
+                            interval
+                        )
+                    )
+                ))
+                time_play -= 1000
+            }
         }
 
     }
@@ -132,24 +165,24 @@ class QuestionActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     private fun genQuestion() {
 
-        /* mQuestionsDB = RoomDBHelper.getAppDataBase(this)
-        mQuestions = mQuestionsDB?.questionsDao()
-
-        Common.questionList = mQuestions?.getAllQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Question> //room implement*/
-
-        Common.questionList = DBHelper.getInstance(this).getQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Question>
-
-        if (Common.questionList.size==0){
+        var mQuestionsDB2 = RoomDBHelper.getAppDataBase(this)
+        var mQuestions2 = mQuestionsDB2?.questionsDao()
+        Common.questionList = mQuestions2?.getAllQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Question> //room implement
 
 
+       /* Common.questionList = DBHelper.getInstance(this)
+            .getQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Question>*/
 
-            MaterialStyledDialog.Builder(this)
-                .setTitle("Oops!")
-                .setIcon(R.drawable.ic_menu_camera)
-                .setDescription("Don't have any questions here ${Common.selectedCategory!!.name} category")
-                .setPositiveText("Ok")
-                .onPositive { finish()  }
-                .show()
+        if (Common.questionList.size == 0) {
+
+             MaterialStyledDialog.Builder(this)
+                 .setTitle("Oops!")
+                 .setIcon(R.drawable.ic_menu_camera)
+                 .setDescription("Don't have any questions here in ${Common.selectedCategory!!.name} category")
+                 .setPositiveText("Ok")
+                 .onPositive { finish() }
+                 .show()
+
         }
 
     }
@@ -160,12 +193,12 @@ class QuestionActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         return true
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        TODO("Not yet implemented")
-    }
+    /*override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // if using extening
+    }*/
 
     override fun onBackPressed() {
-        if(drawer_layout.isDrawerOpen(GravityCompat.START)){
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else
             super.onBackPressed()

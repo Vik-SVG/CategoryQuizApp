@@ -41,7 +41,7 @@ class QuizFragment : Fragment() {
 
 
 
-       /* //Room implem
+        //Room implem
         mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
         mRecycleView.setHasFixedSize(true)
 
@@ -50,20 +50,20 @@ class QuizFragment : Fragment() {
         mRecycleView.addItemDecoration(mItemDecoration)
 
 
-            mDataBase = RoomDBHelper.getAppDataBase(context as Context)
-            mCategories = mDataBase?.categoryDao()
-        val mCategoryList:List<Category>? = mCategories?.getAllCategory()
+          //  mDataBase = RoomDBHelper.getAppDataBase(context as Context)
+          //  mCategories = mDataBase?.categoryDao()
+        val mCategoryList:List<Category>? = RoomDBHelper.getAppDataBase(context as Context)?.categoryDao()?.getAllCategory()
 
         val myAdapter = CategoryAdapter(context as Context, mCategoryList as List<Category>)
         mRecycleView.adapter = myAdapter
 
-        return v*/
+        return v
 
 
 
 
 
-       //sqlite impl
+       /*//sqlite impl
        mRecycleView = v.findViewById<RecyclerView>(R.id.recycler_category)
         mRecycleView.setHasFixedSize(true)
 
@@ -76,18 +76,23 @@ class QuizFragment : Fragment() {
 
         mRecycleView.adapter = adapter
 
-        return v
+        return v*/
 
 
 
 
     }
 
+
+
     companion object {
         fun newInstance(): QuizFragment {
             val fragment: QuizFragment = QuizFragment()
             return fragment
         }
+
+        fun newInstance1(): QuizFragment = QuizFragment()
+
     }
 
 }
