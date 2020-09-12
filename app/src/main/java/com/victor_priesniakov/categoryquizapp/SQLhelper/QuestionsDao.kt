@@ -7,14 +7,14 @@ import com.victor_priesniakov.categoryquizapp.model.Question
 public interface QuestionsDao {
 
    @Query("SELECT * FROM Question WHERE CategoryId == :categoryId ORDER BY RANDOM() LIMIT 30")
-    fun getAllQuestionsByCategory(categoryId:Int):List<Question>
+    suspend fun getAllQuestionsByCategory(categoryId:Int):List<Question>
 
     @Insert
-    fun insert(question: Question?)
+    suspend fun insert(question: Question?)
 
     @Update
-    fun update(question: Question?)
+    suspend fun update(question: Question?)
 
     @Delete
-    fun delete(question: Question?)
+    suspend fun delete(question: Question?)
 }

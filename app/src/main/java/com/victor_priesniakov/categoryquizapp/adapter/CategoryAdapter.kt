@@ -1,5 +1,6 @@
 package com.victor_priesniakov.categoryquizapp.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -7,15 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.victor_priesniakov.categoryquizapp.Common.Common
 import com.victor_priesniakov.categoryquizapp.QuestionActivity
+import com.victor_priesniakov.categoryquizapp.QuestionMainFragment
 import com.victor_priesniakov.categoryquizapp.R
 import com.victor_priesniakov.categoryquizapp.interface1.IonRecyclerViewItemClickListener
 import com.victor_priesniakov.categoryquizapp.model.Category
 
 class CategoryAdapter (internal var context: Context,
-
+                       var fActivity: FragmentActivity?,
                        internal var categoryList:List<Category>): RecyclerView.Adapter<CategoryAdapter.MyViewHolder>(){
 
     inner class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView), View.OnClickListener{
@@ -59,8 +63,15 @@ class CategoryAdapter (internal var context: Context,
         holder.setiOnRecyclerViewItemClickListener(object : IonRecyclerViewItemClickListener {
             override fun onClick(view: View, position: Int) {
                 Common.selectedCategory = categoryList[position]
-                val intent = Intent(context, QuestionActivity::class.java)
-                context.startActivity(intent)
+
+               /* val intent = Intent(context, QuestionActivity::class.java)
+                context.startActivity(intent)*/
+
+                var fragment = QuestionMainFragment()
+                fActivity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fragment, "tag")
+                    ?.addToBackStack(null)
+                    ?.commit()
+
             } })
     }
 

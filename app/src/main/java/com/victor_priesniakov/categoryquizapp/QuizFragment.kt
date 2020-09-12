@@ -15,12 +15,17 @@ import com.victor_priesniakov.categoryquizapp.SQLhelper.RoomDBHelper
 import com.victor_priesniakov.categoryquizapp.adapter.CategoryAdapter
 import com.victor_priesniakov.categoryquizapp.model.Category
 import kotlinx.android.synthetic.main.fragment_quiz.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class QuizFragment : Fragment() {
 
     private var mDataBase:RoomDBHelper?=null
     private var mCategories:CategoryDao?=null
+   private lateinit var mCategoryList:List<Category>
 
     val toolbarTitle = "QUIZ APP 2020"
     lateinit var mRecycleView: RecyclerView
@@ -52,9 +57,18 @@ class QuizFragment : Fragment() {
 
           //  mDataBase = RoomDBHelper.getAppDataBase(context as Context)
           //  mCategories = mDataBase?.categoryDao()
-        val mCategoryList:List<Category>? = RoomDBHelper.getAppDataBase(context as Context)?.categoryDao()?.getAllCategory()
+//TODO: adding coro
 
-        val myAdapter = CategoryAdapter(context as Context, mCategoryList as List<Category>)
+
+              /*runBlocking {
+                  mCategoryList = RoomDBHelper.getAppDataBase(context as Context)?.categoryDao()
+                      ?.getAllCategory()!!
+              }*/
+
+        mCategoryList = getAllmCat()
+
+
+        val myAdapter = CategoryAdapter(context as Context, activity, mCategoryList)
         mRecycleView.adapter = myAdapter
 
         return v
@@ -82,6 +96,13 @@ class QuizFragment : Fragment() {
 
 
     }
+
+
+    private fun getAllmCat():List<Category> = runBlocking {
+       val jobA = async {  RoomDBHelper.getAppDataBase(context as Context)?.categoryDao()?.getAllCategory()!! }
+        jobA.await()
+    }
+
 
 
 

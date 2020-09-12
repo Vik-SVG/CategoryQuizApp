@@ -1,5 +1,6 @@
 package com.victor_priesniakov.categoryquizapp
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -34,7 +35,7 @@ class QuestionFragment : Fragment(), IAnswerSelect {
     lateinit var mLayoutImage: FrameLayout
     lateinit var mProgresBar: ProgressBar
     var mQuestion: Question? = null
-    var mQuestionIndex = -1
+    var mQuestionIndex = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,28 +66,29 @@ class QuestionFragment : Fragment(), IAnswerSelect {
                 img_question.visibility = View.GONE*/
 
 
-            txt_question_text.text = mQuestion!!.QuestionText
+            /* txt_question_text.text = mQuestion!!.QuestionText
 
-            ckb_a.text = mQuestion!!.AnswerA
-            ckb_b.text = mQuestion!!.AnswerB
-            ckb_C.text = mQuestion!!.AnswerC
-            ckb_d.text = mQuestion!!.AnswerD
+             ckb_a.text = mQuestion!!.AnswerA
+             ckb_b.text = mQuestion!!.AnswerB
+             ckb_C.text = mQuestion!!.AnswerC
+             ckb_d.text = mQuestion!!.AnswerD
 
-            mCheckboxList = arrayListOf<CheckBox>(ckb_a, ckb_b, ckb_C, ckb_d)
+             mCheckboxList2 = arrayListOf<CheckBox>(ckb_a, ckb_b, ckb_C, ckb_d)
 
-            for (i in mCheckboxList!!) {
-                i.setOnCheckedChangeListener { compoundButton, b ->
-                    if (b)
-                        Common.selectedValues.add(i.text.toString())
-                    else
-                        Common.selectedValues.remove(i.text.toString())
-                }
-                Log.i("MesArr", "Here ${i.text}")
-            }
+             for (i in mCheckboxList2!!) {
+                 i.setOnCheckedChangeListener { compoundButton, b ->
+                     if (b)
+                         Common.selectedValues.add(i.text.toString())
+                     else
+                         Common.selectedValues.remove(i.text.toString())
+                 }
+                 Log.i("MesArr", "Here ${i.text}")
+             }*/
         }
 
 
     }
+
 
 
     override fun onCreateView(
@@ -96,9 +98,14 @@ class QuestionFragment : Fragment(), IAnswerSelect {
 
         val itemView = inflater.inflate(R.layout.fragment_question, container, false)
 
-        mQuestionIndex = requireArguments().getInt("index", -1) //edited: requireArg Instead of arguments
 
-        mQuestion = Common.questionList[mQuestionIndex]
+        mQuestionIndex = requireArguments().getInt("index", 0) //edited: requireArg Instead of arguments
+
+
+        if (mQuestionIndex == Common.questionList.size){
+            mQuestionIndex == Common.questionList.size -1
+        }
+        mQuestion = Common.questionList[mQuestionIndex ] //added
 
 
         mLayoutImage = itemView.findViewById(R.id.layout_image) as FrameLayout
@@ -120,12 +127,13 @@ class QuestionFragment : Fragment(), IAnswerSelect {
 
                 })
             } else
+
                 mLayoutImage.visibility = View.GONE
 
-           /* mtxtTextQuestion = itemView.findViewById(R.id.txt_question_text) as TextView
-            mtxtTextQuestion.text = mQuestion!!.QuestionText*/
+            mtxtTextQuestion = itemView.findViewById(R.id.txt_question_text) as TextView
+            mtxtTextQuestion.text = mQuestion!!.QuestionText
 
-          /*  mCheckBoxA = itemView.findViewById(R.id.ckb_a) as CheckBox
+            mCheckBoxA = itemView.findViewById(R.id.ckb_a) as CheckBox
             mCheckBoxA.text = mQuestion!!.AnswerA
 
             mCheckBoxB = itemView.findViewById(R.id.ckb_b) as CheckBox
@@ -137,9 +145,8 @@ class QuestionFragment : Fragment(), IAnswerSelect {
             mCheckBoxD = itemView.findViewById(R.id.ckb_d) as CheckBox
             mCheckBoxD.text = mQuestion!!.AnswerD
 
-            mCheckboxList = arrayListOf<CheckBox>(mCheckBoxA, mCheckBoxB, mCheckBoxC, mCheckBoxD)
 
-            for (i in mCheckboxList!!) {
+           /* for (i in mCheckboxList!!) {
 
                 i.setOnCheckedChangeListener { compoundButton, b ->
                     if (b)
@@ -150,7 +157,9 @@ class QuestionFragment : Fragment(), IAnswerSelect {
                 Log.i("MesArr", "Here ${i.text}")
             }*/
 
-            /* mCheckBoxA.setOnCheckedChangeListener{
+
+
+             mCheckBoxA.setOnCheckedChangeListener{
                  compoundButton, b ->
                  if(b)
                      Common.selectedValues.add(mCheckBoxA.text.toString())
@@ -180,7 +189,10 @@ class QuestionFragment : Fragment(), IAnswerSelect {
                      Common.selectedValues.add(mCheckBoxD.text.toString())
                  else
                      Common.selectedValues.remove(mCheckBoxD.text.toString())
-             }*/
+             }
+
+            mCheckboxList = arrayListOf<CheckBox>(mCheckBoxA, mCheckBoxB, mCheckBoxC, mCheckBoxD)
+
 
         }
 
@@ -189,8 +201,15 @@ class QuestionFragment : Fragment(), IAnswerSelect {
 
     override fun selectedAnswer():CurrentQuestion {
         Common.selectedValues.distinct()
+        Common.selectedValues.sort()
 
-        if (Common.myAnswerSheetList[mQuestionIndex].type == Common.ANSWER_TYPE.NO_ANSWER) {
+        if (mQuestionIndex == -1){
+            mQuestionIndex == 0
+        } else if (mQuestionIndex == Common.myAnswerSheetList.size){
+            mQuestionIndex-=1
+        }
+
+        if (Common.myAnswerSheetList[mQuestionIndex].type == Common.ANSWER_TYPE.NO_ANSWER) { //added +1
             val currentQuestion = CurrentQuestion(mQuestionIndex, Common.ANSWER_TYPE.NO_ANSWER)
             val result = StringBuilder()
             if (Common.selectedValues.size > 1) {
@@ -224,25 +243,25 @@ class QuestionFragment : Fragment(), IAnswerSelect {
                     currentQuestion.type = Common.ANSWER_TYPE.NO_ANSWER
 
             } else {
-                Toast.makeText(activity, "Cannot get question", Toast.LENGTH_SHORT).show()
+             //   Toast.makeText(activity, "Cannot get question", Toast.LENGTH_SHORT).show()
                 currentQuestion.type = Common.ANSWER_TYPE.NO_ANSWER
             }
             Common.selectedValues.clear()
             return currentQuestion
         } else
-            return Common.myAnswerSheetList[mQuestionIndex]
+            return Common.myAnswerSheetList[mQuestionIndex] //added +1
     }
 
 
     override fun showCorrectAnswer() {
-        val correctAnswers = mQuestion!!.CorrectAnswer!!.split(",".toRegex())
+        val correctAnswers = mQuestion!!.CorrectAnswer!!.split(",".toRegex()) //added nll
             .dropLastWhile { it.isEmpty() }
 
         for (answer in correctAnswers) {
 
             when (answer){
-                "A"-> mCheckBoxA.apply {  setTypeface(null, Typeface.BOLD)
-                    setTextColor(Color.RED)}
+                "A"-> {mCheckBoxA.setTypeface(null, Typeface.BOLD)
+                    mCheckBoxA.setTextColor(Color.RED)}
 
                 "B"->{mCheckBoxB.setTypeface(null, Typeface.BOLD)
                 mCheckBoxB.setTextColor(Color.RED)}
@@ -250,8 +269,8 @@ class QuestionFragment : Fragment(), IAnswerSelect {
                 "C"-> {mCheckBoxC.setTypeface(null, Typeface.BOLD)
                 mCheckBoxC.setTextColor(Color.RED)}
 
-                "D"->mCheckBoxD.apply{setTypeface(null, Typeface.BOLD)
-                setTextColor(Color.RED)}
+                "D"->{mCheckBoxD.setTypeface(null, Typeface.BOLD)
+                mCheckBoxD.setTextColor(Color.RED)}
             }
 
             /*if (answer.equals("A")) {
@@ -280,10 +299,6 @@ class QuestionFragment : Fragment(), IAnswerSelect {
             i.isEnabled = false
         }
 
-        /* mCheckBoxA.isEnabled = false
-         mCheckBoxB.isEnabled = false
-         mCheckBoxC.isEnabled = false
-         mCheckBoxD.isEnabled = false*/
     }
 
     override fun resetQuestion() {
@@ -294,26 +309,6 @@ class QuestionFragment : Fragment(), IAnswerSelect {
             i.setTypeface(null, Typeface.NORMAL)
             i.setTextColor(Color.BLACK)
         }
-
-
-        /* mCheckBoxA.isEnabled = true
-         mCheckBoxB.isEnabled = true
-         mCheckBoxC.isEnabled = true
-         mCheckBoxD.isEnabled = true
-
-         mCheckBoxA.isChecked = false
-         mCheckBoxB.isChecked = false
-         mCheckBoxC.isChecked = false
-         mCheckBoxD.isChecked = false
-
-         mCheckBoxA.setTypeface(null, Typeface.NORMAL)
-         mCheckBoxA.setTextColor(Color.BLACK)
-         mCheckBoxB.setTypeface(null, Typeface.NORMAL)
-         mCheckBoxB.setTextColor(Color.BLACK)
-         mCheckBoxC.setTypeface(null, Typeface.NORMAL)
-         mCheckBoxC.setTextColor(Color.BLACK)
-         mCheckBoxD.setTypeface(null, Typeface.NORMAL)
-         mCheckBoxD.setTextColor(Color.BLACK)*/
 
         Common.selectedValues.clear()
     }

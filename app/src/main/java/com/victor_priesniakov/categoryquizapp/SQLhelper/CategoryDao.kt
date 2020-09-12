@@ -1,5 +1,6 @@
 package com.victor_priesniakov.categoryquizapp.SQLhelper
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.victor_priesniakov.categoryquizapp.model.Category
 
@@ -7,16 +8,19 @@ import com.victor_priesniakov.categoryquizapp.model.Category
 public interface CategoryDao {
 
     @Query("SELECT * FROM Category")
-    fun getAllCategory():List<Category>
+    suspend fun getAllCategory():List<Category>
+
+  /*  @Query("SELECT * FROM Category")
+   suspend fun getAllCategory():LiveData<List<Category>>*/
 
     @Insert
-    fun insert(category: Category?)
+    suspend fun insert(category: Category?)
 
     @Update
-    fun update(category: Category?)
+    suspend fun update(category: Category?)
 
     @Delete
-    fun delete(category: Category?)
+    suspend fun delete(category: Category?)
 
 
 }
