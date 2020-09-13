@@ -17,6 +17,11 @@ import com.victor_priesniakov.categoryquizapp.QuestionMainFragment
 import com.victor_priesniakov.categoryquizapp.R
 import com.victor_priesniakov.categoryquizapp.interface1.IonRecyclerViewItemClickListener
 import com.victor_priesniakov.categoryquizapp.model.Category
+import com.victor_priesniakov.categoryquizapp.model.Question
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class CategoryAdapter (internal var context: Context,
                        var fActivity: FragmentActivity?,
@@ -64,14 +69,25 @@ class CategoryAdapter (internal var context: Context,
             override fun onClick(view: View, position: Int) {
                 Common.selectedCategory = categoryList[position]
 
-               /* val intent = Intent(context, QuestionActivity::class.java)
+                /*GlobalScope.launch {
+                    val intent = Intent(context, QuestionActivity::class.java)
+                    context.startActivity(intent)
+                }*/
+
+
+                        val intent = Intent(context, QuestionActivity::class.java)
+                        context.startActivity(intent)
+
+
+                /*val intent = Intent(context, QuestionActivity::class.java)
                 context.startActivity(intent)*/
 
-                var fragment = QuestionMainFragment()
+               /* var fragment = QuestionMainFragment()
                 fActivity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fragment, "tag")
                     ?.addToBackStack(null)
-                    ?.commit()
+                    ?.commit()*/
 
+                //TODO: fragment or activity
             } })
     }
 

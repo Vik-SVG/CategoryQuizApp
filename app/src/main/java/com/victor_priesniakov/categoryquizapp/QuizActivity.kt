@@ -28,13 +28,6 @@ class QuizActivity : SingleFragmentActivity() {
         return true
     }*/
 
-    override fun onBackPressed() {
-        mDrawerLayout = findViewById(R.id.drawer_layout)
 
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START)
-        } else
-            super.onBackPressed()
-    }
 
 }

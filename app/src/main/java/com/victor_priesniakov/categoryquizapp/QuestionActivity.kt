@@ -7,17 +7,17 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
-import com.google.android.material.navigation.NavigationView
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog
+import com.google.android.material.tabs.TabLayoutMediator
 import com.victor_priesniakov.categoryquizapp.Common.Common
-import com.victor_priesniakov.categoryquizapp.SQLhelper.DBHelper
 import com.victor_priesniakov.categoryquizapp.SQLhelper.QuestionsDao
 import com.victor_priesniakov.categoryquizapp.SQLhelper.RoomDBHelper
 import com.victor_priesniakov.categoryquizapp.adapter.GridAnswerAdapter
@@ -28,6 +28,9 @@ import kotlinx.android.synthetic.main.activity_question.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
 class QuestionActivity : AppCompatActivity(){
@@ -40,15 +43,12 @@ class QuestionActivity : AppCompatActivity(){
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var myViewPager: ViewPager
     private lateinit var mGridAnswer: RecyclerView
-    lateinit var mTxt_wrong_answer:TextView
 
+    private lateinit var mTxtWrongAnswer:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
-
-
-
 
        // val toolbar: Toolbar = findViewById(R.id.toolbar2)
         toolbar2.title = "Now Quiz!"
@@ -89,10 +89,9 @@ class QuestionActivity : AppCompatActivity(){
 
             mGridAnswer = findViewById(R.id.grid_answer)
             mGridAnswer.setHasFixedSize(true)
-            //grid_answer.setHasFixedSize(true)
+
 
             if (Common.questionList.size > 0)
-               // grid_answer.layoutManager = GridLayoutManager(
                 mGridAnswer.layoutManager = GridLayoutManager(
                     this,
                     if (Common.questionList.size > 10)
@@ -101,24 +100,37 @@ class QuestionActivity : AppCompatActivity(){
                 )
 
             adapter = GridAnswerAdapter(this, Common.myAnswerSheetList)
-            //grid_answer.adapter = adapter
             mGridAnswer.adapter = adapter
 
-            genFragmentList()
 
-            val fragmentAdapter =
-                MyFragmentAdapter(supportFragmentManager, this, Common.fragmentList)
 
-          //  view_pager.offscreenPageLimit = Common.questionList.size
-            view_pager.adapter = fragmentAdapter
-            sliding_tabs.setupWithViewPager(view_pager)
+         //  runBlocking {
+               genFragmentList()
+         //  }
 
-            /* myViewPager = findViewById(R.id.view_pager)
+
+               val fragmentAdapter =
+                   MyFragmentAdapter(this,this, Common.fragmentList)
+
+               view_pager.adapter = fragmentAdapter
+
+               TabLayoutMediator(sliding_tabs, view_pager) { tab, position ->
+                   tab.text = "Question ${position + 1}"
+                   view_pager.setCurrentItem(tab.position, true)
+               }.attach()
+
+
+
+           // sliding_tabs.setupWithViewPager(view_pager)
+
+            view_pager.offscreenPageLimit = Common.questionList.size
+
+            /* myViewPager = findViewById(R.id.view_pager
              myViewPager.offscreenPageLimit = Common.questionList.size
              myViewPager.adapter = fragmentAdapter
               sliding_tabs.setupWithViewPager(myViewPager)*/
 
-            view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
 
                 val SCROLLING_RIGHT = 0
                 val SCROLLING_LEFT = 1
@@ -127,7 +139,7 @@ class QuestionActivity : AppCompatActivity(){
                 var currentScrollDirection = SCROLLING_UNDETERMINED
 
                 private val isScrollDirectionUndtermined:Boolean
-                get() = currentScrollDirection == SCROLLING_UNDETERMINED
+                    get() = currentScrollDirection == SCROLLING_UNDETERMINED
 
                 private val isScrollDirectionRight:Boolean
                     get() = currentScrollDirection == SCROLLING_RIGHT
@@ -162,7 +174,7 @@ class QuestionActivity : AppCompatActivity(){
                             position = p0-1
                         } else if (isScrollDirectionLeft){
                             questionFragment = Common.fragmentList[p0+1]
-                        position = p0+1
+                            position = p0+1
                         } else{
                             questionFragment = Common.fragmentList[p0]
                         }
@@ -171,20 +183,34 @@ class QuestionActivity : AppCompatActivity(){
                         position = 0
                     }
 
-                    if (Common.fragmentList[position].activity == Common.ANSWER_TYPE.NO_ANSWER){
+
+
+
+                    if (Common.myAnswerSheetList[position].type == Common.ANSWER_TYPE.NO_ANSWER){
                         val question_state = questionFragment.selectedAnswer()
+
                         Common.myAnswerSheetList[position] = question_state
                         adapter.notifyDataSetChanged()
                         countCorrectAnswer()
 
                         txt_right_answer.text = "${Common.right_answer_count} / ${Common.questionList.size}"
 
+
+                        if (Common.wrong_answer_count>0) {
+                            mTxtWrongAnswer.text = "${Common.wrong_answer_count}"
+                        }
+
+                        if (question_state.type != Common.ANSWER_TYPE.NO_ANSWER) {
+                            questionFragment.showCorrectAnswer() //TODO: Ответы
+                            questionFragment.disableAnswer()
+                        }
+
                     }
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
-                if (state == ViewPager.SCROLL_STATE_IDLE)
-                    this.currentScrollDirection == SCROLLING_UNDETERMINED
+                    if (state == ViewPager.SCROLL_STATE_IDLE)
+                        this.currentScrollDirection == SCROLLING_UNDETERMINED
                 }
             })
 
@@ -203,7 +229,11 @@ class QuestionActivity : AppCompatActivity(){
 
     }
 
-    private fun genFragmentList() {
+   private fun genFragmentList() {
+
+        if (!Common.fragmentList.equals(null))
+            Common.fragmentList.clear()
+
         for (i in Common.questionList.indices) {
             val bundle = Bundle()
             bundle.putInt("index", i)
@@ -214,6 +244,7 @@ class QuestionActivity : AppCompatActivity(){
     }
 
     private fun genItems() {
+
         if (!Common.myAnswerSheetList.equals(null))
             Common.myAnswerSheetList.clear()
 
@@ -253,14 +284,24 @@ class QuestionActivity : AppCompatActivity(){
 
         var mQuestionsDB2 = RoomDBHelper.getAppDataBase(this)
         var mQuestions2 = mQuestionsDB2?.questionsDao()
+        if (!Common.questionList.equals(null)){
+            Common.questionList.clear()
+        }
 
       //  Common.questionList = mQuestions2?.getAllQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Question> //room implement
-
 
        /* Common.questionList = DBHelper.getInstance(this)
             .getQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Question>*/
 
-        if (Common.questionList.size == 0) {
+
+            Common.questionList = runBlocking {
+            val job = async {
+                mQuestions2?.getAllQuestionsByCategory(Common.selectedCategory!!.ID) as MutableList<Question>
+            }
+            job.await()
+            }
+
+         if (Common.questionList.size == 0) {
 
              MaterialStyledDialog.Builder(this)
                  .setTitle("Oops!")
@@ -274,9 +315,14 @@ class QuestionActivity : AppCompatActivity(){
 
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
+
         menuInflater.inflate(R.menu.question, menu)
+        val  mItem:MenuItem = menu!!.findItem(R.id.menu_wrong_answer)
+        val layout = mItem.actionView as ConstraintLayout
+        mTxtWrongAnswer = layout.findViewById(R.id.txt_wrong_answer) as TextView
+
         return true
     }
 
@@ -285,6 +331,7 @@ class QuestionActivity : AppCompatActivity(){
     }*/
 
     override fun onBackPressed() {
+
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else

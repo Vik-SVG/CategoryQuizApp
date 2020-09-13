@@ -48,7 +48,7 @@ class QuestionFragment : Fragment(), IAnswerSelect {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(mQuestion!=null) {
+       // if(mQuestion!=null) {
 
            /* if (mQuestion!!.IsImageQuestion == 1) {
 
@@ -84,7 +84,7 @@ class QuestionFragment : Fragment(), IAnswerSelect {
                  }
                  Log.i("MesArr", "Here ${i.text}")
              }*/
-        }
+       // }
 
 
     }
@@ -105,7 +105,7 @@ class QuestionFragment : Fragment(), IAnswerSelect {
         if (mQuestionIndex == Common.questionList.size){
             mQuestionIndex == Common.questionList.size -1
         }
-        mQuestion = Common.questionList[mQuestionIndex ] //added
+        mQuestion = Common.questionList[mQuestionIndex ] //added ч
 
 
         mLayoutImage = itemView.findViewById(R.id.layout_image) as FrameLayout
@@ -126,9 +126,9 @@ class QuestionFragment : Fragment(), IAnswerSelect {
                     }
 
                 })
-            } else
-
+            } else{
                 mLayoutImage.visibility = View.GONE
+            }
 
             mtxtTextQuestion = itemView.findViewById(R.id.txt_question_text) as TextView
             mtxtTextQuestion.text = mQuestion!!.QuestionText
@@ -259,7 +259,7 @@ class QuestionFragment : Fragment(), IAnswerSelect {
 
         for (answer in correctAnswers) {
 
-            when (answer){
+            /*when (answer){
                 "A"-> {mCheckBoxA.setTypeface(null, Typeface.BOLD)
                     mCheckBoxA.setTextColor(Color.RED)}
 
@@ -271,9 +271,9 @@ class QuestionFragment : Fragment(), IAnswerSelect {
 
                 "D"->{mCheckBoxD.setTypeface(null, Typeface.BOLD)
                 mCheckBoxD.setTextColor(Color.RED)}
-            }
+            }*/
 
-            /*if (answer.equals("A")) {
+            if (answer.equals("A")) {
                 mCheckBoxA.setTypeface(null, Typeface.BOLD)
                 mCheckBoxA.setTextColor(Color.RED)
 
@@ -288,7 +288,7 @@ class QuestionFragment : Fragment(), IAnswerSelect {
             } else if (answer.equals("D")) {
                 mCheckBoxD.setTypeface(null, Typeface.BOLD)
                 mCheckBoxD.setTextColor(Color.RED)
-            }*/
+            }
         }
 
     }
