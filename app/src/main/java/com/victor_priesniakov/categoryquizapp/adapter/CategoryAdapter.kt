@@ -66,7 +66,7 @@ class CategoryAdapter (internal var context: Context,
     holder.txt_category_name.text = categoryList[position].name
 
         holder.setiOnRecyclerViewItemClickListener(object : IonRecyclerViewItemClickListener {
-            override fun onClick(view: View, position: Int) {
+            override fun onClick(view: View?, position: Int) {
                 Common.selectedCategory = categoryList[position]
 
                 /*GlobalScope.launch {

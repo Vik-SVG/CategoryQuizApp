@@ -1,58 +1,96 @@
 package com.victor_priesniakov.categoryquizapp
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import com.victor_priesniakov.categoryquizapp.Common.Common
+import com.victor_priesniakov.categoryquizapp.Common.SpacesItemDescription
 import com.victor_priesniakov.categoryquizapp.SQLhelper.QuestionsDao
 import com.victor_priesniakov.categoryquizapp.SQLhelper.RoomDBHelper
 import com.victor_priesniakov.categoryquizapp.adapter.GridAnswerAdapter
 import com.victor_priesniakov.categoryquizapp.adapter.MyFragmentAdapter
+import com.victor_priesniakov.categoryquizapp.adapter.QuestionListHelperAdapter
 import com.victor_priesniakov.categoryquizapp.model.CurrentQuestion
 import com.victor_priesniakov.categoryquizapp.model.Question
 import kotlinx.android.synthetic.main.activity_question.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 class QuestionActivity : AppCompatActivity(){
 
     private var mQuestionsDB: RoomDBHelper? = null
     private var mQuestions: QuestionsDao? = null
     lateinit var countDownTimer: CountDownTimer
-    var time_play = Common.TOTAL_TIME
-    lateinit var adapter: GridAnswerAdapter
+    var timePlay = Common.TOTAL_TIME
+    lateinit var gridAnswerAdapter: GridAnswerAdapter
+    lateinit var questionHelperAdapter:QuestionListHelperAdapter
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var myViewPager: ViewPager
     private lateinit var mGridAnswer: RecyclerView
+    private var isAnswerModeView = false
 
     private lateinit var mTxtWrongAnswer:TextView
+
+    internal var goToQuestionNum:BroadcastReceiver = object : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent!!.action!!.toString()==Common.KEY_GO_TO_QUESTION){
+                val question = intent.getIntExtra(Common.KEY_GO_TO_QUESTION, -1)
+
+                if (question != -1)
+                    view_pager.currentItem = question
+
+                drawer_layout.closeDrawer(GravityCompat.START) //start to left
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(goToQuestionNum)
+      /*  if (!countDownTimer.equals(null)) //TODO:timer
+            countDownTimer.cancel()*/
+        if (!Common.fragmentList.equals(null))
+            Common.fragmentList.clear()
+        if (!Common.myAnswerSheetList.equals(null))
+            Common.myAnswerSheetList.clear()
+
+        super.onDestroy()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
 
        // val toolbar: Toolbar = findViewById(R.id.toolbar2)
-        toolbar2.title = "Now Quiz!"
+      //  toolbar2.title = "Now Quiz!"
         setSupportActionBar(toolbar2)
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(goToQuestionNum, IntentFilter(Common.KEY_GO_TO_QUESTION))
 
         val toggle = ActionBarDrawerToggle(
             this,
@@ -63,6 +101,33 @@ class QuestionActivity : AppCompatActivity(){
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+
+
+        val recyclerHelperAnswerSheetList = nav_view.getHeaderView(0).findViewById<RecyclerView>(R.id.answer_sheet)
+        recyclerHelperAnswerSheetList.setHasFixedSize(true)
+        recyclerHelperAnswerSheetList.layoutManager = GridLayoutManager(this, 3)
+        recyclerHelperAnswerSheetList.addItemDecoration(SpacesItemDescription(2))
+
+        val mBtnDone = nav_view.getHeaderView(0).findViewById<Button>(R.id.btn_done)
+        mBtnDone.setOnClickListener{
+            if(!isAnswerModeView){
+              val dil =  MaterialStyledDialog.Builder(this@QuestionActivity)
+                    .setTitle("Finish?")
+                    .setDescription("Really finish?")
+                    .setIcon(R.drawable.ic_mood_white_24)
+                    .setNegativeText("No")
+                    .setPositiveText("Yes")
+                    .setCancelable(true)
+                    .onPositive {  finishGame()
+                        drawer_layout.closeDrawer(GravityCompat.START) }
+                    .onNegative{   }
+                  .show()
+            } else{
+                finishGame()
+            }
+
+            }
+
 
 
        // nav_view.setNavigationItemSelectedListener(this) // if extending ,NavigationView.OnNavigationItemSelectedListener
@@ -78,6 +143,8 @@ class QuestionActivity : AppCompatActivity(){
 
 
         genQuestion()
+
+
 
         if (Common.questionList.size > 0) {
             txt_timer.visibility = View.VISIBLE
@@ -99,8 +166,9 @@ class QuestionActivity : AppCompatActivity(){
                     else Common.questionList.size
                 )
 
-            adapter = GridAnswerAdapter(this, Common.myAnswerSheetList)
-            mGridAnswer.adapter = adapter
+            gridAnswerAdapter = GridAnswerAdapter(this, Common.myAnswerSheetList)
+           // questionHelperAdapter = QuestionListHelperAdapter(this, Common.myAnswerSheetList)
+            mGridAnswer.adapter = gridAnswerAdapter
 
 
 
@@ -190,7 +258,8 @@ class QuestionActivity : AppCompatActivity(){
                         val question_state = questionFragment.selectedAnswer()
 
                         Common.myAnswerSheetList[position] = question_state
-                        adapter.notifyDataSetChanged()
+                        gridAnswerAdapter.notifyDataSetChanged()
+                        questionHelperAdapter.notifyDataSetChanged()
                         countCorrectAnswer()
 
                         txt_right_answer.text = "${Common.right_answer_count} / ${Common.questionList.size}"
@@ -213,6 +282,10 @@ class QuestionActivity : AppCompatActivity(){
                         this.currentScrollDirection == SCROLLING_UNDETERMINED
                 }
             })
+
+            txt_right_answer.text = (Common.right_answer_count/Common.questionList.size).toString()
+            questionHelperAdapter = QuestionListHelperAdapter(this, Common.myAnswerSheetList)
+            recyclerHelperAnswerSheetList.adapter = questionHelperAdapter
 
         }
     }
@@ -270,14 +343,32 @@ class QuestionActivity : AppCompatActivity(){
                         )
                     )
                 ))
-                time_play -= 1000
+                timePlay -= 1000
             }
         }
 
     }
 
     private fun finishGame() {
-        TODO("Not yet implemented")
+
+        val position = view_pager.currentItem
+        val questionFragment = Common.fragmentList[position]
+        //  val answerFragment = Common.fragmentList[position-2]
+
+        val questionState = questionFragment.selectedAnswer()
+        Common.myAnswerSheetList[position] = questionState
+        gridAnswerAdapter.notifyDataSetChanged()
+        questionHelperAdapter.notifyDataSetChanged()
+        countCorrectAnswer()
+
+        txt_right_answer.text = (Common.right_answer_count / Common.questionList.size).toString() //might not work
+        mTxtWrongAnswer.text = "${Common.wrong_answer_count}"
+
+        if (questionState.type != Common.ANSWER_TYPE.NO_ANSWER){
+            questionFragment.showCorrectAnswer()
+            questionFragment.disableAnswer()
+        }
+
     }
 
     private fun genQuestion() {
@@ -308,20 +399,48 @@ class QuestionActivity : AppCompatActivity(){
                  .setIcon(R.drawable.ic_menu_camera)
                  .setDescription("Don't have any questions here in ${Common.selectedCategory!!.name} category")
                  .setPositiveText("Ok")
-                 .onPositive { finish() }
+                 .onPositive { finish()}
                  .show()
 
         }
 
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item!!.itemId){
+            R.id.menu_done->{
+                if(!isAnswerModeView){
+                    val dil =  MaterialStyledDialog.Builder(this@QuestionActivity)
+                        .setTitle("Finish?")
+                        .setDescription("Really finish?")
+                        .setIcon(R.drawable.ic_mood_white_24)
+                        .setNegativeText("No")
+                        .setPositiveText("Yes")
+                        .setCancelable(true)
+                        .onPositive {  finishGame()
+                            drawer_layout.closeDrawer(GravityCompat.START) }
+                        .onNegative{   }
+                        .show()
+                } else{
+                    finishGame()
+                }
+            }
+        }
+
+        return true
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
         menuInflater.inflate(R.menu.question, menu)
         val  mItem:MenuItem = menu!!.findItem(R.id.menu_wrong_answer)
+
         val layout = mItem.actionView as ConstraintLayout
         mTxtWrongAnswer = layout.findViewById(R.id.txt_wrong_answer) as TextView
+
+        mTxtWrongAnswer.setOnClickListener{
+            Toast.makeText(this, "${Common.wrong_answer_count} wrong answers", Toast.LENGTH_SHORT).show()
+        }
 
         return true
     }

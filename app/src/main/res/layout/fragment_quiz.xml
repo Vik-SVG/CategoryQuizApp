@@ -22,7 +22,20 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
                 app:popupTheme="@style/AppTheme.AppBarOverlay"
-                app:titleTextColor="@color/design_default_color_on_primary"></androidx.appcompat.widget.Toolbar>
+                app:titleTextColor="@color/design_default_color_on_primary">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Quiz App 2020"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="18sp" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+
 
         </com.google.android.material.appbar.AppBarLayout>
 

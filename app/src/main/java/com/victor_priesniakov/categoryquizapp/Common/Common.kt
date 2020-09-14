@@ -7,7 +7,8 @@ import com.victor_priesniakov.categoryquizapp.model.Question
 import java.lang.StringBuilder
 
 object Common {
-    val TOTAL_TIME = 20*60*1000 //20 min
+     val KEY_GO_TO_QUESTION:String? = "position"
+    const val TOTAL_TIME = 20*60*1000 //20 min
 
     var myAnswerSheetList:MutableList<CurrentQuestion> = ArrayList()
     var questionList:MutableList<Question> = ArrayList()

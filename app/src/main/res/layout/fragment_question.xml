@@ -37,6 +37,7 @@
             android:id="@+id/txt_question_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
             android:text="What do you choose?"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -45,24 +46,28 @@
             android:id="@+id/ckb_a"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
             android:text="Answer A" />
 
         <CheckBox
             android:id="@+id/ckb_b"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
             android:text="Answer B" />
 
         <CheckBox
             android:id="@+id/ckb_C"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
             android:text="Answer C" />
 
         <CheckBox
             android:id="@+id/ckb_d"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
             android:text="Answer D" />
 
     </LinearLayout>

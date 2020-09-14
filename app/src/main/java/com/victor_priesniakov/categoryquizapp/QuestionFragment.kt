@@ -1,11 +1,10 @@
 package com.victor_priesniakov.categoryquizapp
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,8 @@ import com.victor_priesniakov.categoryquizapp.Common.Common
 import com.victor_priesniakov.categoryquizapp.interface1.IAnswerSelect
 import com.victor_priesniakov.categoryquizapp.model.CurrentQuestion
 import com.victor_priesniakov.categoryquizapp.model.Question
-import kotlinx.android.synthetic.main.fragment_question.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.lang.StringBuilder
 
@@ -116,16 +116,18 @@ class QuestionFragment : Fragment(), IAnswerSelect {
             if (mQuestion!!.IsImageQuestion == 1) {
                 val imageVIew = itemView.findViewById<View>(R.id.img_question) as ImageView
 
-                Picasso.get().load(mQuestion!!.QuestionImage).into(imageVIew, object : Callback {
-                    override fun onSuccess() {
-                        mProgresBar.visibility = View.GONE
-                    }
+                    Picasso.get().load(mQuestion!!.QuestionImage)
+                        .into(imageVIew, object : Callback {
+                            override fun onSuccess() {
+                                mProgresBar.visibility = View.GONE
+                            }
 
-                    override fun onError(e: Exception?) {
-                        imageVIew.setImageResource(R.drawable.ic_menu_slideshow)
-                    }
+                            override fun onError(e: Exception?) {
+                                imageVIew.setImageResource(R.drawable.ic_menu_slideshow)}
 
-                })
+                        })
+
+
             } else{
                 mLayoutImage.visibility = View.GONE
             }

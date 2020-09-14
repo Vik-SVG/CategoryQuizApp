@@ -9,7 +9,7 @@
         android:id="@+id/txt_wrong_answer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/back"
+        android:background="@color/colorForTabs"
         android:padding="10dp"
         android:text="@string/zero"
         android:textColor="@color/cardview_light_background"

@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimary"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -20,8 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            >
+            android:layout_marginBottom="8dp">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -32,9 +31,10 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/grid_answer"
+            android:fontFamily="sans-serif-condensed"
             android:text="0/30"
             android:textColor="@android:color/background_light"
-            android:textSize="24sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone" />
 
@@ -46,9 +46,10 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
+            android:fontFamily="sans-serif-condensed"
             android:text="0:30"
             android:textColor="@android:color/background_light"
-            android:textSize="24sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone" />
 
@@ -64,7 +65,11 @@
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabMode="scrollable">
+            android:background="@color/colorForTabs"
+            android:theme="@style/AppTheme.NoActionBar"
+            app:tabMode="scrollable"
+            app:tabTextAppearance="@style/TabText"
+            app:tabTextColor="@color/cardview_light_background">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/tab_item12"

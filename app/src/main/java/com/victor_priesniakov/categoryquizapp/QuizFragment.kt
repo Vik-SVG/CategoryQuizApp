@@ -41,7 +41,7 @@ class QuizFragment : Fragment() {
     ): View? {
 
         val v = inflater.inflate(R.layout.fragment_quiz, container, false)
-        v.toolbar1.title = toolbarTitle
+       // v.toolbar1.title = toolbarTitle
 
 
 
