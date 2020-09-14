@@ -120,143 +120,143 @@ class QuestionMainFragment : Fragment() {
 
 
 
-           /* mGridAnswerRecyclerView = mainView.findViewById(R.id.grid_answer)
-            mGridAnswerRecyclerView.setHasFixedSize(true)
-            //grid_answer.setHasFixedSize(true)
+        /* mGridAnswerRecyclerView = mainView.findViewById(R.id.grid_answer)
+         mGridAnswerRecyclerView.setHasFixedSize(true)
+         //grid_answer.setHasFixedSize(true)
 
-            if (Common.questionList.size > 0)
-            // grid_answer.layoutManager = GridLayoutManager(
-                mGridAnswerRecyclerView.layoutManager = GridLayoutManager(
-                    context as Context,
-                    if (Common.questionList.size > 10)
-                        Common.questionList.size / 2
-                    else Common.questionList.size
-                )
+         if (Common.questionList.size > 0)
+         // grid_answer.layoutManager = GridLayoutManager(
+             mGridAnswerRecyclerView.layoutManager = GridLayoutManager(
+                 context as Context,
+                 if (Common.questionList.size > 10)
+                     Common.questionList.size / 2
+                 else Common.questionList.size
+             )
 
-            mGridAdapter = GridAnswerAdapter(context as Context, Common.myAnswerSheetList)
-            //grid_answer.adapter = adapter
-            mGridAnswerRecyclerView.adapter = mGridAdapter*/
-
-
+         mGridAdapter = GridAnswerAdapter(context as Context, Common.myAnswerSheetList)
+         //grid_answer.adapter = adapter
+         mGridAnswerRecyclerView.adapter = mGridAdapter*/
 
 
 
 
 
-            /*genFragmentList()
-
-             fragmentAdapter =
-                MyFragmentAdapter(
-                    activity?.supportFragmentManager as FragmentManager,
-                    context as Context,
-                    Common.fragmentList
-                )
-
-            //  view_pager.offscreenPageLimit = Common.questionList.size
-            mViewPager.adapter = fragmentAdapter
-            mSlidingTabs.setupWithViewPager(mViewPager)
-            mViewPager.offscreenPageLimit = 30  //TODO: лимит страниц
-
-            mViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{ //TODO: review
-
-                val SCROLLING_RIGHT = 0
-                val SCROLLING_LEFT = 1
-                val SCROLLING_UNDETERMINED = 2
-
-                var currentScrollDirection = SCROLLING_UNDETERMINED
-
-                private val isScrollDirectionUndetermined:Boolean
-                    get() = currentScrollDirection == SCROLLING_UNDETERMINED
-
-                private val isScrollDirectionRight:Boolean
-                    get() = currentScrollDirection == SCROLLING_RIGHT
-
-                private val isScrollDirectionLeft:Boolean
-                    get() = currentScrollDirection == SCROLLING_LEFT
-
-                private fun setScrollDirection(positionOffSet:Float){
-
-                    if (1-positionOffSet>=0.5)
-                        this.currentScrollDirection = SCROLLING_RIGHT
-                    else if (1-positionOffSet<=0.5)
-                        this.currentScrollDirection = SCROLLING_LEFT
-
-                }
 
 
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                    setScrollDirection(positionOffset)
-                }
+        /*genFragmentList()
 
-                override fun onPageSelected(p0: Int) {
+         fragmentAdapter =
+            MyFragmentAdapter(
+                activity?.supportFragmentManager as FragmentManager,
+                context as Context,
+                Common.fragmentList
+            )
 
-                     var position=p0
+        //  view_pager.offscreenPageLimit = Common.questionList.size
+        mViewPager.adapter = fragmentAdapter
+        mSlidingTabs.setupWithViewPager(mViewPager)
+        mViewPager.offscreenPageLimit = 30  //TODO: лимит страниц
 
-                    if (p0>0){
-                        if (isScrollDirectionRight){
-                                 questionFragment = Common.fragmentList[p0]
-                                position = p0
-                            answerFragment = Common.fragmentList[p0-1]
+        mViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{ //TODO: review
+
+            val SCROLLING_RIGHT = 0
+            val SCROLLING_LEFT = 1
+            val SCROLLING_UNDETERMINED = 2
+
+            var currentScrollDirection = SCROLLING_UNDETERMINED
+
+            private val isScrollDirectionUndetermined:Boolean
+                get() = currentScrollDirection == SCROLLING_UNDETERMINED
+
+            private val isScrollDirectionRight:Boolean
+                get() = currentScrollDirection == SCROLLING_RIGHT
+
+            private val isScrollDirectionLeft:Boolean
+                get() = currentScrollDirection == SCROLLING_LEFT
+
+            private fun setScrollDirection(positionOffSet:Float){
+
+                if (1-positionOffSet>=0.5)
+                    this.currentScrollDirection = SCROLLING_RIGHT
+                else if (1-positionOffSet<=0.5)
+                    this.currentScrollDirection = SCROLLING_LEFT
+
+            }
 
 
-                        } else if (isScrollDirectionLeft){
-                            questionFragment = Common.fragmentList[p0]// deleted
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                setScrollDirection(positionOffset)
+            }
+
+            override fun onPageSelected(p0: Int) {
+
+                 var position=p0
+
+                if (p0>0){
+                    if (isScrollDirectionRight){
+                             questionFragment = Common.fragmentList[p0]
                             position = p0
-                            answerFragment = Common.fragmentList[p0+1]
+                        answerFragment = Common.fragmentList[p0-1]
 
 
-                        } else{
-                            questionFragment = Common.fragmentList[p0]
-                            answerFragment = Common.fragmentList[p0]
-                        }
+                    } else if (isScrollDirectionLeft){
+                        questionFragment = Common.fragmentList[p0]// deleted
+                        position = p0
+                        answerFragment = Common.fragmentList[p0+1]
 
-                    }else{
-                        questionFragment = Common.fragmentList[0]
-                        position = 0
-                        answerFragment = Common.fragmentList[0]
 
+                    } else{
+                        questionFragment = Common.fragmentList[p0]
+                        answerFragment = Common.fragmentList[p0]
                     }
 
-                    if (position==Common.myAnswerSheetList.size){
-                        position == Common.myAnswerSheetList.size -1
-                    }
+                }else{
+                    questionFragment = Common.fragmentList[0]
+                    position = 0
+                    answerFragment = Common.fragmentList[0]
 
-                    if (Common.myAnswerSheetList[position].type == Common.ANSWER_TYPE.NO_ANSWER){
-
-                        val questionState = questionFragment.selectedAnswer() //TODO: проблема с ответами не сохр
-
-                        if (position!=0){
-                        Common.myAnswerSheetList[position-1] = questionState //TODO;сетка с ответами
-                        } else{
-                            Common.myAnswerSheetList[position] = questionState //
-                        }
-
-                        mGridAdapter.notifyDataSetChanged()
-                        fragmentAdapter.notifyDataSetChanged()//added
-                        countCorrectAnswer()
-
-                        mRight_answer_txt.text = "${Common.right_answer_count} / ${Common.questionList.size}" //might not work
-                        mTxt_wrong_answer.text = "${Common.wrong_answer_count}"
-
-                        if (questionState.type != Common.ANSWER_TYPE.NO_ANSWER){
-                            answerFragment.showCorrectAnswer() //TODO: Ответы
-                            answerFragment.disableAnswer()
-                        }
-
-                    }
                 }
 
-                override fun onPageScrollStateChanged(state: Int) {
-                    if (state == ViewPager.SCROLL_STATE_IDLE)
-                        this.currentScrollDirection == SCROLLING_UNDETERMINED
+                if (position==Common.myAnswerSheetList.size){
+                    position == Common.myAnswerSheetList.size -1
                 }
-            })*/
 
-      //  }
+                if (Common.myAnswerSheetList[position].type == Common.ANSWER_TYPE.NO_ANSWER){
+
+                    val questionState = questionFragment.selectedAnswer() //TODO: проблема с ответами не сохр
+
+                    if (position!=0){
+                    Common.myAnswerSheetList[position-1] = questionState //TODO;сетка с ответами
+                    } else{
+                        Common.myAnswerSheetList[position] = questionState //
+                    }
+
+                    mGridAdapter.notifyDataSetChanged()
+                    fragmentAdapter.notifyDataSetChanged()//added
+                    countCorrectAnswer()
+
+                    mRight_answer_txt.text = "${Common.right_answer_count} / ${Common.questionList.size}" //might not work
+                    mTxt_wrong_answer.text = "${Common.wrong_answer_count}"
+
+                    if (questionState.type != Common.ANSWER_TYPE.NO_ANSWER){
+                        answerFragment.showCorrectAnswer() //TODO: Ответы
+                        answerFragment.disableAnswer()
+                    }
+
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                if (state == ViewPager.SCROLL_STATE_IDLE)
+                    this.currentScrollDirection == SCROLLING_UNDETERMINED
+            }
+        })*/
+
+        //  }
 
 
 
@@ -313,28 +313,28 @@ class QuestionMainFragment : Fragment() {
         //grid_answer.adapter = adapter
         mGridAnswerRecyclerView.adapter = mGridAdapter
 
-       // genQuestion()
+        // genQuestion()
 
         if (Common.questionList.size > 0) {
             txtTimer.visibility = View.VISIBLE
             mRight_answer_txt.visibility = View.VISIBLE
 
-           /* countTimer()
+            /* countTimer()
 
-            genItems()
+             genItems()
 
 
-            genFragmentList()*/
+             genFragmentList()*/
 
-          /*  fragmentAdapter =
-                MyFragmentAdapter(
-                    activity?.supportFragmentManager as FragmentManager,
-                    context as Context,
-                    Common.fragmentList
-                )*/
+            /*  fragmentAdapter =
+                  MyFragmentAdapter(
+                      activity?.supportFragmentManager as FragmentManager,
+                      context as Context,
+                      Common.fragmentList
+                  )*/
 
             //  view_pager.offscreenPageLimit = Common.questionList.size
-         //   mViewPager.adapter = fragmentAdapter
+            //   mViewPager.adapter = fragmentAdapter
             mSlidingTabs.setupWithViewPager(mViewPager)
 //            mViewPager.offscreenPageLimit = 30  //TODO: лимит страниц
 
@@ -501,7 +501,7 @@ class QuestionMainFragment : Fragment() {
     private fun finishGame() {
         val position = mViewPager.currentItem
         val questionFragment = Common.fragmentList[position]
-      //  val answerFragment = Common.fragmentList[position-2]
+        //  val answerFragment = Common.fragmentList[position-2]
 
         val questionState = questionFragment.selectedAnswer()
         Common.myAnswerSheetList[position] = questionState
@@ -522,10 +522,10 @@ class QuestionMainFragment : Fragment() {
 
 
         if (mQuestionsDB2==null)
-         mQuestionsDB2 = RoomDBHelper.getAppDataBase(context as Context)
+            mQuestionsDB2 = RoomDBHelper.getAppDataBase(context as Context)
 
         if (mQuestions2==null)
-        mQuestions2 = mQuestionsDB2?.questionsDao()
+            mQuestions2 = mQuestionsDB2?.questionsDao()
 
         if (!Common.questionList.equals(null)){
             Common.questionList.clear()
@@ -564,17 +564,17 @@ class QuestionMainFragment : Fragment() {
         inflater.inflate(R.menu.question, menu)
 
 
-       /* val mItem = menu.findItem(R.id.menu_wrong_answer)
-        val layout  = mItem.actionView*/
+        /* val mItem = menu.findItem(R.id.menu_wrong_answer)
+         val layout  = mItem.actionView*/
         //        val layout:ConstraintLayout = mItem.actionView as ConstraintLayout
 
-      return  super.onCreateOptionsMenu(menu, inflater)
+        return  super.onCreateOptionsMenu(menu, inflater)
 
 
         //  return super.onCreateOptionsMenu(menu, inflater)
-       // return inflater.inflate(R.menu.question, menu)
+        // return inflater.inflate(R.menu.question, menu)
         //val mItem = menu.findItem(R.id.txt_right_answer)
-      //  mItem = menu.findItem(R.id.menu_wrong_answer)
+        //  mItem = menu.findItem(R.id.menu_wrong_answer)
 
     }
 
@@ -582,8 +582,8 @@ class QuestionMainFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
 
-      val  mItem = menu.findItem(R.id.menu_wrong_answer)
-   //     mItem.isVisible = false
+        val  mItem = menu.findItem(R.id.menu_wrong_answer)
+        //     mItem.isVisible = false
 
         val layout = mItem.actionView as ConstraintLayout
 
