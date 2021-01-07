@@ -7,10 +7,14 @@ import com.victor_priesniakov.categoryquizapp.model.Question
 import java.lang.StringBuilder
 
 object Common {
-     val KEY_GO_TO_QUESTION:String? = "position"
+    var isOnlineMode: Boolean = false
+    val KEY_SAVE_ONLINE_MODE: String? = "ONLINE_MODE"
+    const val KEY_BACK_FROM_RESULT:String = "back_from_result"
+    const val KEY_GO_TO_QUESTION:String = "position_go_to"
     const val TOTAL_TIME = 20*60*1000 //20 min
 
     var myAnswerSheetList:MutableList<CurrentQuestion> = ArrayList()
+    var myAnswerSheetListFiltered:MutableList<CurrentQuestion> = ArrayList()
     var questionList:MutableList<Question> = ArrayList()
     var selectedCategory:Category?=null
 

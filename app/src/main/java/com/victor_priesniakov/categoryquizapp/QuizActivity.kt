@@ -18,8 +18,7 @@ class QuizActivity : SingleFragmentActivity() {
         return QuizFragment.newInstance1()
     }
 
-
-   /* override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+    /* override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
 
         val mItem = menu!!.findItem(R.id.txt_wrong_answer)
         val layout = mItem.actionView as ConstraintLayout

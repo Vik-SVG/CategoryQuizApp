@@ -5,8 +5,9 @@ import androidx.room.ColumnInfo.INTEGER
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-data class Question(@PrimaryKey
+
+ @Entity
+data class Question constructor (@PrimaryKey
                      public  var ID:Int,
                     public var QuestionText:String?,
                     public   var QuestionImage:String?,
@@ -20,4 +21,16 @@ data class Question(@PrimaryKey
                     public  var CategoryID:Int?
 
 ) {
-}
+     constructor(): this(0,
+     null,
+     null,
+     null,
+         null,
+         null,
+         null,
+         null,
+         0,
+         0
+     )
+ }
+

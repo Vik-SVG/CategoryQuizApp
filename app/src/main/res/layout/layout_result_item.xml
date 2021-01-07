@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/btn_question"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/grid_item_no_answer"
+    android:drawableBottom="@drawable/ic_baseline_error_outline_white__24"
+    android:fontFamily="sans-serif-condensed"
+    android:text="Question 1"
+    android:textAppearance="@style/TabText"
+    android:textColor="@color/ic_octo02_background">
+
+
+</Button>
